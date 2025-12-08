@@ -21,17 +21,16 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Restore dependencies
-        run: dotnet restore BloodPressureApp/BloodPressureApp.csproj
+        run: dotnet restore BloodPressureApp.sln
 
-      - name: Build project
-        run: dotnet build BloodPressureApp/BloodPressureApp.csproj --no-restore
+      - name: Build solution
+        run: dotnet build BloodPressureApp.sln --no-restore
 
       - name: Run tests with coverage
-        run: dotnet test BloodPressureApp.Tests/BloodPressureApp.Tests.csproj --no-build --collect:"XPlat Code Coverage"
+        run: dotnet test BloodPressureApp.sln --no-build --collect:"XPlat Code Coverage"
 
       - name: Upload coverage results
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: '**/TestResults/**/coverage.cobertura.xml'
-          
