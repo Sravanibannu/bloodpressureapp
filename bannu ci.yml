@@ -15,3 +15,6 @@ jobs:
 
     - name: Restore dependencies
       run: dotnet restore BloodPressureApp.sln
+      
+      - name: Build project
+        run: dotnet build BloodPressureApp.sln --configuration Release
