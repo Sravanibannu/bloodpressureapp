@@ -21,3 +21,10 @@ jobs:
 
       - name: Run tests
         run: dotnet test BloodPressureApp.sln --no-build --verbosity normal
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+  workflow_dispatch:
