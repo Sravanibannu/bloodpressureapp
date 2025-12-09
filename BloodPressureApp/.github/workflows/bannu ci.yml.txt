@@ -1,0 +1,33 @@
+name: Build and Test BloodPressureApp
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: BloodPressureApp
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore BloodPressureApp.sln
+
+    - name: Build project
+      run: dotnet build BloodPressureApp.sln --configuration Release
+
+    - name: Run tests
+      run: dotnet test BloodPressureApp.sln --no-build --verbosity normal
