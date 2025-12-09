@@ -1,0 +1,34 @@
+﻿@page
+@model BloodPressureApp.Pages.IndexModel
+@{
+    ViewData["Title"] = "Blood Pressure Category";
+}
+
+<h2>Blood Pressure Category Calculator</h2>
+
+<form method="post">
+    <div>
+        <label for="systolic">Systolic:</label>
+        <input asp-for="Systolic" type="number" min="70" max="190" required />
+    </div>
+    <div>
+        <label for="diastolic">Diastolic:</label>
+        <input asp-for="Diastolic" type="number" min="40" max="120" required />
+    </div>
+    <button type="submit">Calculate</button>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.CategoryResult))
+{
+    <div style="color:@Model.CategoryColor; font-weight:bold; margin-top:10px;">
+        <strong>Category:</strong> @Model.CategoryResult
+    </div>
+    <div style="margin-top:5px;">
+        <em>@Model.HealthTip</em>
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(Model.Trend))
+{
+    <p><strong>Trend:</strong> @Model.Trend</p>
+}
