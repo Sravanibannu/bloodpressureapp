@@ -1,0 +1,23 @@
+name: E2E Test Pipeline
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run-e2e-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Run E2E Test
+      run: dotnet test tests/e2e.test.csproj
