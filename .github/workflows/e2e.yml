@@ -5,7 +5,7 @@ on:
 
 jobs:
   run-e2e-tests:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - name: Checkout code
@@ -14,12 +14,19 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: '8.0.x'
 
-    - name: Restore ONLY test project dependencies
+    # Restore ONLY the E2E test project
+    - name: Restore E2E test dependencies
       run: dotnet restore tests/e2e/e2e.test.csproj
 
-    - name: Run E2E Test
-      run: dotnet test tests/e2e/e2e.test.csproj --no-build --verbosity normal
+    # Build ONLY the E2E project
+    - name: Build E2E project
+      run: dotnet build tests/e2e/e2e.test.csproj --configuration Release --no-restore
+
+    # Run the E2E tests
+    - name: Run E2E Tests
+      run: dotnet test tests/e2e/e2e.test.csproj --no-build --configuration Release --verbosity normal
+
 
 
