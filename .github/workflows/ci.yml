@@ -22,8 +22,9 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore BloodPressureApp.sln
 
-    - name: Build
-      run: dotnet build BloodPressureApp.sln --configuration Release --no-restore
+    - name: Test
+  run: dotnet test BloodPressureApp.sln --no-build --configuration Release --verbosity normal
+
 
     - name: Test
       run: dotnet test BloodPressureApp.sln --no-build --verbosity normal
