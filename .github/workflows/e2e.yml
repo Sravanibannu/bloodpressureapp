@@ -8,18 +8,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: 8.0.x
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
 
-      - name: Restore ONLY test project dependencies
-        run: dotnet restore tests/e2e/e2e.test.csproj
+    - name: Restore ONLY test project dependencies
+      run: dotnet restore tests/e2e/e2e.test.csproj
 
+    - name: Run E2E Test
+      run: dotnet test tests/e2e/e2e.test.csproj --no-build --verbosity normal
 
-      - name: Run E2E Test
-       run: dotnet test tests/e2e/e2e.test.csproj --no-build
 
