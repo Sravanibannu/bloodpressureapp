@@ -1,29 +1,35 @@
-name: .NET CI
+name: CD Pipeline for Azure deployment
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: windows-latest
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production   # 👈 THIS triggers the authorization gate
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '8.0.x'
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
 
-    - name: Restore dependencies
-      run: dotnet restore BloodPressureApp.sln
+      - name: Build
+        run: dotnet build BloodPressureApp.sln --configuration Release --no-restore
 
-    - name: Build
-      run: dotnet build BloodPressureApp.sln --configuration Release --no-restore
+      - name: Publish project
+        run: dotnet publish BloodPressureApp/BloodPressureApp.csproj -c Release -o published
 
-    - name: Test
-      run: dotnet test BloodPressureApp.sln --no-build --configuration Release --verbosity normal
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}   # 👈 You added this earlier
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: bpapp-staging
+          package: published
