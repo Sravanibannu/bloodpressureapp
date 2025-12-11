@@ -4,18 +4,24 @@ on:
   workflow_dispatch:
 
 jobs:
-  k6-load-test:
+  perf-test:
     runs-on: ubuntu-latest
+
+    env:
+      TARGET_URL: https://bpapp-staging-d5d8a0gcejghg9g8.westeurope-01.azurewebsites.net
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v3
 
     - name: Install k6
       run: |
         sudo apt-get update
+        sudo apt-get install -y gnupg ca-certificates
+        sudo curl -fsSL https://dl.k6.io/key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/k6-archive-keyring.gpg
+        echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+        sudo apt-get update
         sudo apt-get install -y k6
 
-    - name: Run performance test
-      run: |
-        k6 run perf/loadtest.js
+    - name: Run performance test with k6
+      run: k6 run perf/loadtest.js
