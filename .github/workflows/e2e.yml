@@ -17,7 +17,7 @@ jobs:
           dotnet-version: 8.0.x
 
       - name: Restore ONLY test project dependencies
-        run: dotnet restore tests/e2e/e2e.test.csproj
+        run: dotnet restore tests/e2e/tests/e2e/e2e.test.csproj
 
       - name: Run E2E Test
-        run: dotnet test tests/e2e/e2e.test.csproj --no-build
+        run: dotnet test tests/e2e/tests/e2e/e2e.test.csproj --no-build
