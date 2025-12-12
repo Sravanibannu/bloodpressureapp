@@ -1,0 +1,48 @@
+name: CD Pipeline for Azure Deployment
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore BloodPressureApp.sln
+
+      - name: Build solution
+        run: dotnet build BloodPressureApp.sln --no-restore
+
+      - name: Run tests
+        run: dotnet test BloodPressureApp.sln --no-build --verbosity normal
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment: production    # ← VERY IMPORTANT (triggers approval gate!)
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: "bpapp-staging"
+          package: "."
